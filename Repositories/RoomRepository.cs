@@ -105,7 +105,7 @@ namespace Roommates.Repositories
                         {
                             Id = id,
                             Name = reader.GetString(reader.GetOrdinal("Name")),
-                            MaxOccupancy = reader.GetInt32(reader.GetOrdinal("MaxOccupancy")),
+                            MaxOccupancy = reader.GetInt32(reader.GetOrdinal("MaxOccupancy"))
                         };
                     }
 

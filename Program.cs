@@ -17,6 +17,7 @@ namespace Roommates
         { 
             RoomRepository roomRepo = new RoomRepository(CONNECTION_STRING);
             ChoreRepository choreRepo = new ChoreRepository(CONNECTION_STRING);
+            RoommateRepository roommateRepo = new RoommateRepository(CONNECTION_STRING);
 
             bool runProgram = true;
             while (runProgram)
@@ -73,10 +74,10 @@ namespace Roommates
                         Console.ReadLine();
                         break;
                     case ("Search for a chore"):
-                        Console.Write("Room id: ");
+                        Console.Write("Chore id: ");
                         int cId = int.Parse(Console.ReadLine());
 
-                        Chore chore = choreRepo.GetById(cId);
+                        Chore chore = choreRepo.GetChoreById(cId);
 
                         Console.WriteLine($"{chore.Id}: {chore.Name}");
                         Console.WriteLine("Press any key to continue.");
@@ -93,6 +94,16 @@ namespace Roommates
 
                         choreRepo.Insert(choreToAdd);
                         Console.WriteLine($"{choreToAdd.Id}: {choreToAdd.Name}");
+                        Console.WriteLine("Press any key to continue.");
+                        Console.ReadLine();
+                        break;
+                    case ("Search a roommate"):
+                        Console.Write("Roommate id: ");
+                        int rId = int.Parse(Console.ReadLine());
+
+                        Roommate roommate = roommateRepo.GetRoommateById(rId);
+
+                        Console.WriteLine($"{roommate.Id}: {roommate.FirstName} {roommate.LastName}, {roommate.RentPortion}, {roommate.MovedInDate}, {roommate.Room.Name} ");
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
                         break;
@@ -117,6 +128,7 @@ namespace Roommates
                 "See all chores",
                 "Search for a chore",
                 "Add a chore",
+                "Search a roommate",
                 "Exit"
             };
 

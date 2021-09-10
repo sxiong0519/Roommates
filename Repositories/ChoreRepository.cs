@@ -50,7 +50,7 @@ namespace Roommates.Repositories
             }
         }
 
-        public Chore GetById(int id)
+        public Chore GetChoreById(int id)
         {
             using (SqlConnection conn = Connection)
             {
