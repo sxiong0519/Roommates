@@ -101,9 +101,9 @@ namespace Roommates
                         Console.Write("Roommate id: ");
                         int rId = int.Parse(Console.ReadLine());
 
-                        Roommate roommate = roommateRepo.GetRoommateById(rId);
+                        Roommate roo = roommateRepo.GetRoommateById(rId);
 
-                        Console.WriteLine($"{roommate.Id}: {roommate.FirstName} {roommate.LastName}, {roommate.RentPortion}, {roommate.MovedInDate}, {roommate.Room.Name} ");
+                        Console.WriteLine($"{roo.Id}: {roo.FirstName} {roo.LastName}, {roo.RentPortion}, {roo.MovedInDate}, {roo.Room.Name}");
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
                         break;

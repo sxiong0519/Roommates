@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Data.SqlClient;
 using Roommates.Models;
-using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 
 
 namespace Roommates.Repositories
@@ -21,26 +17,24 @@ namespace Roommates.Repositories
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT rm.FirstName, rm.LastName, rm.RentPortion, rm.MoveInDate, r.Id, r.Name, r.MaxOccupancy FROM Roommate rm JOIN Room r ON rm.RoomId = r.Id WHERE rm.Id = @id";
+                    cmd.CommandText = "SELECT FirstName as 'First Name', LastName as 'Last Name', RentPortion, r.Id as 'Room Id', MoveInDate, Name, MaxOccupancy FROM Roommate rm JOIN Room r ON rm.RoomId = r.Id WHERE rm.Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     Roommate roommate = null;
-                    
-                    
 
                     if (reader.Read())
                     {
                         roommate = new Roommate
                         {
                             Id = id,
-                            FirstName = reader.GetString(reader.GetOrdinal("rm.FirstName")),
-                            LastName = reader.GetString(reader.GetOrdinal("rm.LastName")),
-                            RentPortion = reader.GetInt32(reader.GetOrdinal("rm.RentPortion")),
-                            MovedInDate = reader.GetDateTime(reader.GetOrdinal("rm.MoveInDate")),
+                            FirstName = reader.GetString(reader.GetOrdinal("First Name")),
+                            LastName = reader.GetString(reader.GetOrdinal("Last Name")),
+                            RentPortion = reader.GetInt32(reader.GetOrdinal("RentPortion")),
+                            MovedInDate = reader.GetDateTime(reader.GetOrdinal("MoveInDate")),
                             Room = new Room
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("r.id")),
+                                Id = reader.GetInt32(reader.GetOrdinal("Room Id")),
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 MaxOccupancy = reader.GetInt32(reader.GetOrdinal("MaxOccupancy"))
                             }
