@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace Roommates.Repositories
 {
-    class ChoreRepository : BaseRepository
+    public class ChoreRepository : BaseRepository
     {
         public ChoreRepository(string connectionString) : base(connectionString) { }
 
