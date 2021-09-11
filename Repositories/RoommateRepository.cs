@@ -17,7 +17,9 @@ namespace Roommates.Repositories
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT FirstName as 'First Name', LastName as 'Last Name', RentPortion, r.Id as 'Room Id', MoveInDate, Name, MaxOccupancy FROM Roommate rm JOIN Room r ON rm.RoomId = r.Id WHERE rm.Id = @id";
+                    cmd.CommandText = "SELECT FirstName, LastName, RentPortion, r.Id as 'Room Id', MoveInDate, Name, MaxOccupancy " +
+                                      "FROM Roommate rm JOIN Room r ON rm.RoomId = r.Id " +
+                                      "WHERE rm.Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -28,8 +30,8 @@ namespace Roommates.Repositories
                         roommate = new Roommate
                         {
                             Id = id,
-                            FirstName = reader.GetString(reader.GetOrdinal("First Name")),
-                            LastName = reader.GetString(reader.GetOrdinal("Last Name")),
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
                             RentPortion = reader.GetInt32(reader.GetOrdinal("RentPortion")),
                             MovedInDate = reader.GetDateTime(reader.GetOrdinal("MoveInDate")),
                             Room = new Room

@@ -93,7 +93,16 @@ namespace Roommates
                         };
 
                         choreRepo.Insert(choreToAdd);
-                        Console.WriteLine($"{choreToAdd.Id}: {choreToAdd.Name}");
+                        Console.WriteLine($"Added {choreToAdd.Id}: {choreToAdd.Name}");
+                        Console.WriteLine("Press any key to continue.");
+                        Console.ReadLine();
+                        break;
+                    case ("See all unassigned chores"):
+                        List<Chore> chor = choreRepo.GetUnassignedChore();
+                        foreach (Chore c in chor)
+                        {
+                            Console.WriteLine($"{c.Name} is unassigned.");
+                        }
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
                         break;
@@ -103,7 +112,7 @@ namespace Roommates
 
                         Roommate roo = roommateRepo.GetRoommateById(rId);
 
-                        Console.WriteLine($"{roo.Id}: {roo.FirstName} {roo.LastName}, {roo.RentPortion}, {roo.MovedInDate}, {roo.Room.Name}");
+                        Console.WriteLine($"{roo.Id}: {roo.FirstName} {roo.LastName} is paying {roo.RentPortion} to stay in the {roo.Room.Name} starting on {roo.MovedInDate}.");
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
                         break;
@@ -128,6 +137,7 @@ namespace Roommates
                 "See all chores",
                 "Search for a chore",
                 "Add a chore",
+                "See all unassigned chores",
                 "Search a roommate",
                 "Exit"
             };
