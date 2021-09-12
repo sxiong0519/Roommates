@@ -144,13 +144,69 @@ namespace Roommates.Repositories
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
-
+                    
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"INSERT INTO RoommateChore (ChoreId, RoommateId)
                                       OUTPUT INSERTED.Id
                                       VALUES (@choreId, @roommateId)";
+                    cmd.Parameters.AddWithValue("@choreId", choreId);
+                    cmd.Parameters.AddWithValue("@roommateId", roommateId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<Chore> GetChoreCounts()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT c.Id AS 'Chore Id', Name, FirstName, LastName, rc.Id AS 'Roommate Chore Id' FROM Chore c JOIN RoommateChore rc ON c.Id = rc.ChoreId JOIN Roommate r ON rc.RoommateId = r.Id";
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Chore> choresList = new List<Chore>();
+
+                    while (reader.Read())
+                    {
+                        int unassignedColumnIdPosition = reader.GetOrdinal("Chore Id");
+                        int unassignedIdValue = reader.GetInt32(unassignedColumnIdPosition);
+
+                        int unassignedColumnRmIdPosition = reader.GetOrdinal("Roommate Chore Id");
+                        int unassignedRmIdValue = reader.GetInt32(unassignedColumnRmIdPosition);
+
+                        int unassignedColumnChorePosition = reader.GetOrdinal("Name");
+                        string unassignedChoreValue = reader.GetString(unassignedColumnChorePosition);
+
+                        int unassignedColumnFnPosition = reader.GetOrdinal("FirstName");
+                        string unassignedFnValue = reader.GetString(unassignedColumnFnPosition);
+
+                        int unassignedColumnLnPosition = reader.GetOrdinal("LastName");
+                        string unassignedLnValue = reader.GetString(unassignedColumnLnPosition);
+
+                        Chore c = new Chore
+                        {
+                            Id = unassignedIdValue,
+                            Name = unassignedChoreValue,
+                            Roommate = new Roommate
+                            {
+                                Id = unassignedRmIdValue,
+                                FirstName = unassignedFnValue,
+                                LastName = unassignedLnValue
+                            }
+                        };
+
+                        choresList.Add(c);
+                    }
+
+                    reader.Close();
+
+                    return choresList;
                 }
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Roommates.Models;
 using Roommates.Repositories;
+using System.Linq;
 
 namespace Roommates
 {
@@ -128,6 +129,16 @@ namespace Roommates
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
                         break;
+                    case ("See chore count by Roommate"):
+                        List<Chore> choo = choreRepo.GetChoreCounts();
+                        var grp = choo.GroupBy(r => r.Roommate.FirstName).Select(g => new { FirstName = g.Key, Count = g.Count() }).ToList();
+                        foreach (var gr in grp )
+                        {
+                            Console.WriteLine($"{gr.FirstName} has {gr.Count} chores assigned.");
+                        }
+                        Console.WriteLine("Press any key to continue.");
+                        Console.ReadLine();
+                        break;
                     case ("Search a roommate"):
                         Console.Write("Roommate id: ");
                         int rId = int.Parse(Console.ReadLine());
@@ -161,6 +172,7 @@ namespace Roommates
                 "Add a chore",
                 "See all unassigned chores",
                 "Assign roommate to chore",
+                "See chore count by Roommate",
                 "Search a roommate",
                 "Exit"
             };
