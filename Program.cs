@@ -214,6 +214,34 @@ namespace Roommates
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
                         break;
+                    case ("Reassign a chore"):
+                        List<RoommateChore> assignedChore = choreRepo.GetAssignedChore();
+                        foreach (RoommateChore a in assignedChore)
+                        {
+                            Console.WriteLine($"{a.Chore.Id} - {a.Chore.Name}");
+                        }
+                        Console.Write("Pick a chore you would like to reassign:");
+                        int aId = int.Parse(Console.ReadLine());
+                        foreach (RoommateChore a in assignedChore)
+                        {
+                            if (a.Chore.Id == aId)
+                            {
+                                Console.WriteLine($"The chore is assigned to {a.Roommate.FirstName}. Who would you like to reassign it to?");
+                            }
+                        }
+                        List<Roommate> choreRoommates = roommateRepo.GetAll();
+                        foreach (Roommate roommate in choreRoommates)
+                        {
+                            Console.WriteLine($"{roommate.Id} - {roommate.FirstName}");
+                        }
+                        int arId = int.Parse(Console.ReadLine());
+
+                        choreRepo.ReAssignChore(aId, arId);
+
+                        Console.WriteLine("Chore has been reassigned");
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
+                        break;
                     case ("Search a roommate"):
                         Console.Write("Roommate id: ");
                         int rId = int.Parse(Console.ReadLine());
@@ -252,6 +280,7 @@ namespace Roommates
                 "Update a chore",
                 "Remove a Chore",
                 "See chore count by Roommate",
+                "Reassign a chore",
                 "Search a roommate",
                 "Exit"
             };

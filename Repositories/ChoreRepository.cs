@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Roommates.Models;
 using Microsoft.Data.SqlClient;
 
@@ -166,7 +162,9 @@ namespace Roommates.Repositories
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT c.Id AS 'Chore Id', Name, FirstName, LastName, rc.Id AS 'Roommate Chore Id' FROM Chore c JOIN RoommateChore rc ON c.Id = rc.ChoreId JOIN Roommate r ON rc.RoommateId = r.Id";
+                    cmd.CommandText = @"SELECT c.Id AS 'Chore Id', Name, FirstName, LastName, rc.Id AS 'Roommate Chore Id' 
+                                        FROM Chore c JOIN RoommateChore rc ON c.Id = rc.ChoreId 
+                                        JOIN Roommate r ON rc.RoommateId = r.Id";
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -243,6 +241,85 @@ namespace Roommates.Repositories
                     cmd.CommandText = @"DELETE FROM RoommateChore
                                         WHERE ChoreId = @id";
                     cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<RoommateChore> GetAssignedChore()
+        {   
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT c.Id AS 'Chore Id', Name, FirstName, LastName, rc.Id AS 'Roommate Chore Id', r.Id AS 'Roommate Id' 
+                                        FROM Chore c JOIN RoommateChore rc ON c.Id = rc.ChoreId 
+                                        JOIN Roommate r ON rc.RoommateId = r.Id";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<RoommateChore> assignedChore = new List<RoommateChore>();
+
+                    while (reader.Read())
+                    {
+                        int assignedColumnRcIdPosition = reader.GetOrdinal("Roommate Chore Id");
+                        int assignedRcIdValue = reader.GetInt32(assignedColumnRcIdPosition);
+
+                        int assignedColumnRIdPosition = reader.GetOrdinal("Roommate Id");
+                        int assignedRIdValue = reader.GetInt32(assignedColumnRIdPosition);
+
+                        int assignedColumnIdPosition = reader.GetOrdinal("Chore Id");
+                        int assignedIdValue = reader.GetInt32(assignedColumnIdPosition);
+
+                        int assignedColumnChorePosition = reader.GetOrdinal("Name");
+                        string assignedChoreValue = reader.GetString(assignedColumnChorePosition);
+
+                        int unassignedColumnFnPosition = reader.GetOrdinal("FirstName");
+                        string assignedFnValue = reader.GetString(unassignedColumnFnPosition);
+
+                        int unassignedColumnLnPosition = reader.GetOrdinal("LastName");
+                        string assignedLnValue = reader.GetString(unassignedColumnLnPosition);
+
+                        RoommateChore c = new RoommateChore
+                        {
+                            Id = assignedColumnRcIdPosition,
+                            Chore = new Chore
+                            {
+                                Id = assignedIdValue,
+                                Name = assignedChoreValue
+                            },
+                            Roommate = new Roommate
+                            {
+                                Id = assignedColumnRIdPosition,
+                                FirstName = assignedFnValue,
+                                LastName = assignedLnValue
+                            }
+
+                        };
+
+                        assignedChore.Add(c);
+                    }
+
+                    reader.Close();
+
+                    return assignedChore;
+                }
+            }
+        }
+        public void ReAssignChore(int choreId, int roommateId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE RoommateChore
+                                        SET ChoreId = @choreId, RoommateId = @roommateId
+                                        WHERE ChoreId = @choreId";
+                    cmd.Parameters.AddWithValue("@choreId", choreId);
+                    cmd.Parameters.AddWithValue("@roommateId", roommateId);
                     cmd.ExecuteNonQuery();
                 }
             }

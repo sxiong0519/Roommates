@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Roommates.Models
+﻿namespace Roommates.Models
 {
-    class RoommateChore
+    public class RoommateChore
     {
         public int Id { get; set; }
 
